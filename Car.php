@@ -12,6 +12,7 @@ class Car extends Vehicle{
     protected string $energy;
     protected int $energyLevel;
     protected bool $isStart;
+    private bool $hasParkBrake = true;
 
     public function __construct(int $nbWheels, string $color, int $nbSeats, string $energy) {
 
@@ -22,13 +23,18 @@ class Car extends Vehicle{
         $this->isStart = false;
     }
 
-    public function start(): string {
+    public function start(): string | Exception {
+        if ($this->hasParkBrake === true) {
+            throw new Exception("Park Brake is ON");
+        }
         if ($this->energyLevel > 0) {
             if ($this->isStart === false) {
                 $this->isStart = true;
                 return "La voiture démarre.";
-            } else return "La voiture est déjà démarrée.";
-        } else return "La voiture ne peut pas démarrer, il n'y a plus d'énergie.";
+            }
+            return "La voiture est déjà démarrée.";
+        } 
+        return "La voiture ne peut pas démarrer, il n'y a plus d'énergie.";
     }
 
     public function forward(): string {
@@ -37,8 +43,10 @@ class Car extends Vehicle{
                 $this->currentSpeed = 15;
                 $this->energyLevel = $this->energyLevel - 1;
                 return "Go !";   
-            } else return "La voiture n'est pas démarrée.";
-        } else return "La voiture n'a plus dénergie";
+            }
+            return "La voiture n'est pas démarrée.";
+        }
+        return "La voiture n'a plus dénergie";
     }
 
     public function brake(): string {
@@ -58,7 +66,7 @@ class Car extends Vehicle{
     }
 
     public function setEnergy(string $energy): Car {
-        if (i_array($energy, self::ALLOWED_ENERGIES)) {
+        if (in_array($energy, self::ALLOWED_ENERGIES)) {
             $this->energy = $energy;
         }
         return $this;
@@ -75,12 +83,16 @@ class Car extends Vehicle{
     }
 
     public function setIsStart(bool $isStart): void {
-        $this->isStart = true;
+        $this->isStart = $isStart;
     }
 
-    public function getIsStart (bool $isStart): string {
+    public function getIsStart (): string {
         if ($this->isStart === true) {
             return "La voiture est démarrée.";
         } else return "La voiture n'est pas démarrée.";
+    }
+
+    public function setHasParkBrake(bool $hasParkBrake): void {
+        $this->hasParkBrake = $hasParkBrake;
     }
 }
